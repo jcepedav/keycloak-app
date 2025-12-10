@@ -1,0 +1,19 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: rhbk-demo-cert
+spec:
+  commonName: rhbk-demo-rhbk.apps.cluster-858h6.858h6.sandbox2642.opentlc.com
+  dnsNames:
+  - rhbk-demo-rhbk.apps.cluster-858h6.858h6.sandbox2642.opentlc.com
+  duration: 2160h
+  isCA: false
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: zerossl-production-ec2
+  renewBefore: 360h
+  secretName: cert-manager-rhbk-demo-cert
+  usages:
+  - server auth
+  - client auth

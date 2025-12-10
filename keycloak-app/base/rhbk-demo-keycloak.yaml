@@ -1,0 +1,22 @@
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: Keycloak
+metadata:
+  name: rhbk-demo
+spec:
+  instances: 1
+  db:
+    vendor: postgres
+    host: postgresql
+    database: rhbk
+    usernameSecret:
+      name: rhbk-db-secret
+      key: username
+    passwordSecret:
+      name: rhbk-db-secret
+      key: password
+  http:
+    tlsSecret: cert-manager-rhbk-demo-cert
+  hostname:
+    hostname: rhbk-demo-rhbk.apps.cluster-858h6.858h6.sandbox2642.opentlc.com
+  proxy:
+    headers: xforwarded # double check your reverse proxy sets and overwrites the X-Forwarded-* headers
