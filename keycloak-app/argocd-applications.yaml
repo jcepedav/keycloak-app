@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/tu-usuario/tu-repo.git
+    repoURL: https://github.com/jcepedav/keycloak-app.git
     targetRevision: main
-    path: keycloak-app/overlays/dev
+    path: overlays/dev
   destination:
     server: https://kubernetes.default.svc
     namespace: keycloak-dev
@@ -27,9 +27,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/tu-usuario/tu-repo.git
+    repoURL: https://github.com/jcepedav/keycloak-app.git
     targetRevision: main
-    path: keycloak-app/overlays/prod
+    path: overlays/prod
   destination:
     server: https://kubernetes.default.svc
     namespace: keycloak-prod
