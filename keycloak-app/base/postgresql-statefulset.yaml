@@ -22,13 +22,11 @@ spec:
             - mountPath: /data
               name: cache-volume
           env:
-            - name: POSTGRES_USER
+            - name: POSTGRESQL_USER
               value: rhbk
-            - name: POSTGRES_PASSWORD
+            - name: POSTGRESQL_PASSWORD
               value: rhbk
-            - name: PGDATA
-              value: /data/pgdata
-            - name: POSTGRES_DB
+            - name: POSTGRESQL_DATABASE
               value: rhbk
       volumes:
         - name: cache-volume
