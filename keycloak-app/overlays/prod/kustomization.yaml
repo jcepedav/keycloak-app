@@ -5,3 +5,24 @@ resources:
   - ../../base
 
 namespace: keycloak-prod
+
+replacements:
+  - source:
+      kind: Namespace
+      fieldPath: metadata.name
+    targets:
+      - select:
+          kind: Namespace
+        fieldPaths:
+          - metadata.name
+        options:
+          create: true
+      - select:
+          kind: OperatorGroup
+        fieldPaths:
+          - metadata.namespace
+          - spec.targetNamespaces.0
+      - select:
+          kind: Subscription
+        fieldPaths:
+          - metadata.namespace
