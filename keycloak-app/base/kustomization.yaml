@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - rhbk-db-secret-secret.yaml
+  - rhbk-db-configmap.yaml
   - postgresql-statefulset.yaml
   - keycloak-cert-manager-certificate.yaml
   - rhbk-demo-keycloak.yaml
