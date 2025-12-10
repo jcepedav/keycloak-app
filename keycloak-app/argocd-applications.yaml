@@ -2,13 +2,13 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: keycloak-dev
-  namespace: argocd
+  namespace: openshift-gitops
 spec:
   project: default
   source:
     repoURL: https://github.com/jcepedav/keycloak-app.git
     targetRevision: main
-    path: overlays/dev
+    path: keycloak-app/overlays/dev
   destination:
     server: https://kubernetes.default.svc
     namespace: keycloak-dev
@@ -23,13 +23,13 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: keycloak-prod
-  namespace: argocd
+  namespace: openshift-gitops
 spec:
   project: default
   source:
     repoURL: https://github.com/jcepedav/keycloak-app.git
     targetRevision: main
-    path: overlays/prod
+    path: keycloak-app/overlays/prod
   destination:
     server: https://kubernetes.default.svc
     namespace: keycloak-prod
