@@ -9,7 +9,7 @@ namespace: keycloak-prod
 configMapGenerator:
   - name: keycloak-config
     literals:
-      - hostname=rhbk-demo-dev.apps.cluster-m8pfc.m8pfc.sandbox132.opentlc.com/
+      - hostname=rhbk-demo-dev.apps.cluster-nrhxn.nrhxn.sandbox1930.opentlc.com/
 
 replacements:
   - source:

@@ -29,4 +29,4 @@ replacements:
 configMapGenerator:
   - name: keycloak-config
     literals:
-      - hostname=rhbk-demo-rhbk.apps.cluster-858h6.858h6.sandbox2642.opentlc.com
+      - hostname=rhbk-demo-dev.apps.cluster-nrhxn.nrhxn.sandbox1930.opentlc.com
