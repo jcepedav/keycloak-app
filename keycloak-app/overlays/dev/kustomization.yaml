@@ -5,26 +5,3 @@ resources:
   - ../../base
 
 namespace: keycloak-dev
-
-configMapGenerator:
-  - name: keycloak-config
-    literals:
-      - hostname=rhbk-demo-dev.apps.cluster-nrhxn.nrhxn.sandbox1930.opentlc.com/
-
-replacements:
-  - source:
-      kind: ConfigMap
-      name: keycloak-config
-      fieldPath: data.hostname
-    targets:
-      - select:
-          kind: Keycloak
-          name: rhbk-demo
-        fieldPaths:
-          - spec.hostname.hostname
-      - select:
-          kind: Certificate
-          name: rhbk-demo-cert
-        fieldPaths:
-          - spec.commonName
-          - spec.dnsNames.0
