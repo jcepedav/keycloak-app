@@ -6,6 +6,15 @@ resources:
 
 namespace: keycloak-prod
 
+patches:
+  - target:
+      kind: Secret
+      name: rhbk-demo-db-secret
+    patch: |-
+      - op: replace
+        path: /stringData/POSTGRES_EXTERNAL_ADDRESS
+        value: postgresql.keycloak-prod.svc.cluster.local
+
 replacements:
   - source:
       kind: Namespace
