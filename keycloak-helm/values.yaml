@@ -1,0 +1,3 @@
+keycloak:
+  clusterDomain: cluster-nrhxn.nrhxn.sandbox1930.opentlc.com
+  keycloakAppName: rhbk-demo

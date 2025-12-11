@@ -1,0 +1,11 @@
+apiVersion: keycloak.org/v1alpha1
+kind: Keycloak
+metadata:
+  name: keycloak
+  namespace: {{ .Release.Namespace }}
+spec:
+  instances: 1
+  externalDatabase:
+    enabled: true
+  externalAccess:
+    enabled: true
