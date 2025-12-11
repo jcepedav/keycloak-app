@@ -10,10 +10,10 @@ spec:
     host: postgresql
     database: rhbk
     usernameSecret:
-      name: rhbk-db-secret
+      name: keycloak-db-secret
       key: username
     passwordSecret:
-      name: rhbk-db-secret
+      name: keycloak-db-secret
       key: password
   http:
     tlsSecret: cert-manager-rhbk-demo-cert
