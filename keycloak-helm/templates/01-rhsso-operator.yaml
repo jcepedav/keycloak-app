@@ -27,9 +27,9 @@ metadata:
     "helm.sh/hook": pre-install
     "helm.sh/hook-weight": "-3"
 spec:
-  channel: stable
+  channel: stable-v26.4
   installPlanApproval: Automatic
-  name: rhsso-operator
+  name: rhbk-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: rhsso-operator.7.6.12-opr-005
+  startingCSV: rhbk-operator.v26.4.7-opr.1

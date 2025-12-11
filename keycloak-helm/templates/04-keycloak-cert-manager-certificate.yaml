@@ -4,7 +4,6 @@ metadata:
   name: rhbk-demo-cert
   namespace: {{ .Release.Namespace }}
 spec:
-  commonName: {{ .Values.keycloak.keycloakAppName }}-{{ .Release.Namespace }}.apps.{{ .Values.keycloak.clusterDomain }}
   dnsNames:
   - {{ .Values.keycloak.keycloakAppName }}-{{ .Release.Namespace }}.apps.{{ .Values.keycloak.clusterDomain }}
   duration: 2160h
