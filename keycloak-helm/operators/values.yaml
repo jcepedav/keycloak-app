@@ -1,0 +1,10 @@
+# Values for operators chart
+# This chart installs the required operators for Keycloak and Grafana
+
+operators:
+  grafana:
+    enabled: true
+    namespace: grafana-operator
+  rhsso:
+    enabled: true
+    namespace: keycloak

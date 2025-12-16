@@ -1,0 +1,7 @@
+apiVersion: v2
+name: keycloak
+description: Helm chart for Red Hat Build of Keycloak (RHBK) deployment
+type: application
+version: 1.0.0
+appVersion: "24"
+dependencies: []

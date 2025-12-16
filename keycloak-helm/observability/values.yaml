@@ -1,0 +1,22 @@
+# Values for observability chart
+# This chart deploys Grafana and monitoring components for Keycloak
+
+observability:
+  namespace: keycloak
+  
+  grafana:
+    adminUser: root
+    adminPassword: secret
+    version: "12.1.0"
+    
+  datasource:
+    prometheus:
+      url: https://thanos-querier.openshift-monitoring.svc.cluster.local:9091
+      tlsSkipVerify: true
+      timeInterval: "5s"
+      
+  serviceAccount:
+    name: grafana-serviceaccount
+    
+  monitoring:
+    enabled: true

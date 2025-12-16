@@ -1,0 +1,19 @@
+# Values for keycloak chart
+# This chart deploys Red Hat Build of Keycloak
+
+keycloak:
+  clusterDomain: cluster-lqrqg.lqrqg.sandbox1285.opentlc.com
+  keycloakAppName: rhbk-demo
+  namespace: keycloak
+  
+  database:
+    vendor: postgres
+    host: postgresql
+    name: rhbk
+    username: rhbk
+    password: rhbk
+  
+  instances: 1
+  
+  http:
+    tlsSecret: cert-manager-rhbk-demo-cert
