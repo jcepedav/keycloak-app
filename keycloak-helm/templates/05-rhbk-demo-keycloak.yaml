@@ -5,6 +5,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   instances: 1
+  image: quay.io/keycloak/keycloak:21.0.1
   db:
     vendor: postgres
     host: postgresql
