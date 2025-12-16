@@ -1,31 +1,134 @@
-apiVersion: k8s.keycloak.org/v2alpha1
-kind: KeycloakRealmImport
+apiVersion: batch/v1
+kind: Job
 metadata:
-  name: master-realm-google-idp
+  name: keycloak-google-idp-setup
   namespace: {{ .Release.Namespace }}
   annotations:
     argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
 spec:
-  keycloakCRName: {{ .Values.keycloak.keycloakAppName }}
-  realm:
-    id: master
-    realm: master
-    enabled: true
-    identityProviders:
-      - alias: google
-        displayName: "Google"
-        providerId: google
-        enabled: true
-        updateProfileFirstLoginMode: "on"
-        trustEmail: true
-        storeToken: false
-        addReadTokenRoleOnCreate: false
-        authenticateByDefault: false
-        linkOnly: false
-        firstBrokerLoginFlowAlias: "first broker login"
-        config:
-          clientId: "{{`${secret:google-identity-provider-secret:clientId}`}}"
-          clientSecret: "{{`${secret:google-identity-provider-secret:clientSecret}`}}"
-          syncMode: "IMPORT"
-          hostedDomain: ""
-          useJwksUrl: "true"
+  ttlSecondsAfterFinished: 300
+  backoffLimit: 10
+  template:
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: default
+      containers:
+      - name: setup-google-idp
+        image: badouralix/curl-jq:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          set -e
+          
+          # Esperar a que Keycloak esté listo
+          echo "Esperando a que Keycloak esté disponible..."
+          for i in $(seq 1 30); do
+            if curl -sk https://{{ .Values.keycloak.keycloakAppName }}-service:8443/health/ready 2>/dev/null | grep -q "UP"; then
+              echo "Keycloak está listo!"
+              break
+            fi
+            echo "Intento $i/30: Keycloak no está listo, esperando..."
+            sleep 10
+          done
+          
+          echo "Configurando Google Identity Provider..."
+          
+          KEYCLOAK_URL="https://{{ .Values.keycloak.keycloakAppName }}-service:8443"
+          
+          # Obtener credenciales de admin
+          ADMIN_USER=$(cat /keycloak-admin/username)
+          ADMIN_PASS=$(cat /keycloak-admin/password)
+          
+          # Obtener credenciales de Google
+          GOOGLE_CLIENT_ID=$(cat /google-credentials/clientId)
+          GOOGLE_CLIENT_SECRET=$(cat /google-credentials/clientSecret)
+          
+          # Obtener token de acceso
+          echo "Obteniendo token de acceso..."
+          TOKEN=$(curl -sk -X POST "$KEYCLOAK_URL/realms/master/protocol/openid-connect/token" \
+            -d "client_id=admin-cli" \
+            -d "username=$ADMIN_USER" \
+            -d "password=$ADMIN_PASS" \
+            -d "grant_type=password" 2>/dev/null | jq -r '.access_token' 2>/dev/null)
+          
+          if [ -z "$TOKEN" ] || [ "$TOKEN" = "null" ]; then
+            echo "Error: No se pudo obtener el token de acceso"
+            exit 1
+          fi
+          
+          # Verificar si el IDP ya existe
+          echo "Verificando si Google IDP ya existe..."
+          IDP_EXISTS=$(curl -sk -H "Authorization: Bearer $TOKEN" \
+            "$KEYCLOAK_URL/admin/realms/master/identity-provider/instances/google" \
+            -w "%{http_code}" -o /tmp/idp_check.json)
+          
+          if [ "$IDP_EXISTS" = "200" ]; then
+            echo "Google Identity Provider ya existe, actualizándolo..."
+            curl -sk -X PUT -H "Authorization: Bearer $TOKEN" \
+              -H "Content-Type: application/json" \
+              "$KEYCLOAK_URL/admin/realms/master/identity-provider/instances/google" \
+              -d "{
+                \"alias\": \"google\",
+                \"displayName\": \"Google\",
+                \"providerId\": \"google\",
+                \"enabled\": true,
+                \"updateProfileFirstLoginMode\": \"on\",
+                \"trustEmail\": true,
+                \"storeToken\": false,
+                \"addReadTokenRoleOnCreate\": false,
+                \"authenticateByDefault\": false,
+                \"linkOnly\": false,
+                \"firstBrokerLoginFlowAlias\": \"first broker login\",
+                \"config\": {
+                  \"clientId\": \"$GOOGLE_CLIENT_ID\",
+                  \"clientSecret\": \"$GOOGLE_CLIENT_SECRET\",
+                  \"syncMode\": \"IMPORT\",
+                  \"hostedDomain\": \"\",
+                  \"useJwksUrl\": \"true\"
+                }
+              }"
+          else
+            echo "Creando Google Identity Provider..."
+            curl -sk -X POST -H "Authorization: Bearer $TOKEN" \
+              -H "Content-Type: application/json" \
+              "$KEYCLOAK_URL/admin/realms/master/identity-provider/instances" \
+              -d "{
+                \"alias\": \"google\",
+                \"displayName\": \"Google\",
+                \"providerId\": \"google\",
+                \"enabled\": true,
+                \"updateProfileFirstLoginMode\": \"on\",
+                \"trustEmail\": true,
+                \"storeToken\": false,
+                \"addReadTokenRoleOnCreate\": false,
+                \"authenticateByDefault\": false,
+                \"linkOnly\": false,
+                \"firstBrokerLoginFlowAlias\": \"first broker login\",
+                \"config\": {
+                  \"clientId\": \"$GOOGLE_CLIENT_ID\",
+                  \"clientSecret\": \"$GOOGLE_CLIENT_SECRET\",
+                  \"syncMode\": \"IMPORT\",
+                  \"hostedDomain\": \"\",
+                  \"useJwksUrl\": \"true\"
+                }
+              }"
+          fi
+          
+          echo "Google Identity Provider configurado exitosamente!"
+        volumeMounts:
+        - name: keycloak-admin
+          mountPath: /keycloak-admin
+          readOnly: true
+        - name: google-credentials
+          mountPath: /google-credentials
+          readOnly: true
+      volumes:
+      - name: keycloak-admin
+        secret:
+          secretName: {{ .Values.keycloak.keycloakAppName }}-initial-admin
+      - name: google-credentials
+        secret:
+          secretName: google-identity-provider-secret
