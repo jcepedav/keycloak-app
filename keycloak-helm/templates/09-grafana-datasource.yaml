@@ -4,7 +4,7 @@ metadata:
   name: prometheus-datasource
   namespace: {{ .Release.Namespace }}
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   instanceSelector:
     matchLabels:
@@ -18,3 +18,6 @@ spec:
     jsonData:
       tlsSkipVerify: true
       timeInterval: "5s"
+      httpHeaderName1: "Authorization"
+    secureJsonData:
+      httpHeaderValue1: "Bearer $(__file{/var/run/secrets/kubernetes.io/serviceaccount/token})"
