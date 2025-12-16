@@ -17,8 +17,6 @@ spec:
       template:
         spec:
           serviceAccountName: grafana-serviceaccount
-  client:
-    preferService: true
   config:
     log:
       mode: "console"
