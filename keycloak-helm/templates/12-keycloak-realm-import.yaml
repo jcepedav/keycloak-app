@@ -24,8 +24,8 @@ spec:
         linkOnly: false
         firstBrokerLoginFlowAlias: "first broker login"
         config:
-          clientId: "${{`{{secret:google-identity-provider-secret:clientId}}`}}"
-          clientSecret: "${{`{{secret:google-identity-provider-secret:clientSecret}}`}}"
+          clientId: "{{`${secret:google-identity-provider-secret:clientId}`}}"
+          clientSecret: "{{`${secret:google-identity-provider-secret:clientSecret}`}}"
           syncMode: "IMPORT"
           hostedDomain: ""
           useJwksUrl: "true"
