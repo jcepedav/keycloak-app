@@ -1,0 +1,31 @@
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: KeycloakRealmImport
+metadata:
+  name: master-realm-google-idp
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  keycloakCRName: {{ .Values.keycloak.keycloakAppName }}
+  realm:
+    id: master
+    realm: master
+    enabled: true
+    identityProviders:
+      - alias: google
+        displayName: "Google"
+        providerId: google
+        enabled: true
+        updateProfileFirstLoginMode: "on"
+        trustEmail: true
+        storeToken: false
+        addReadTokenRoleOnCreate: false
+        authenticateByDefault: false
+        linkOnly: false
+        firstBrokerLoginFlowAlias: "first broker login"
+        config:
+          clientId: "$\{secret:google-identity-provider-secret:clientId}"
+          clientSecret: "$\{secret:google-identity-provider-secret:clientSecret}"
+          syncMode: "IMPORT"
+          hostedDomain: ""
+          useJwksUrl: "true"
