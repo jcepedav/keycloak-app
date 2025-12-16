@@ -5,6 +5,8 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app.openshift.io/runtime: postgresql
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   serviceName: postgresql-service
   selector:

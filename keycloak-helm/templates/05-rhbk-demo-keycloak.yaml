@@ -3,6 +3,8 @@ kind: Keycloak
 metadata:
   name: {{ .Values.keycloak.keycloakAppName }}
   namespace: {{ .Release.Namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   instances: 1
   image: quay.io/keycloak/keycloak:21.0.1

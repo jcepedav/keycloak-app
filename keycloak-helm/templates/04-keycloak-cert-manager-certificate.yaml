@@ -3,6 +3,8 @@ kind: Certificate
 metadata:
   name: rhbk-demo-cert
   namespace: {{ .Release.Namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   dnsNames:
   - {{ .Values.keycloak.keycloakAppName }}-{{ .Release.Namespace }}.apps.{{ .Values.keycloak.clusterDomain }}
