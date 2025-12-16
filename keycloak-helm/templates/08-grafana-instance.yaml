@@ -25,5 +25,5 @@ spec:
     auth:
       disable_login_form: "false"
     security:
-      admin_user: admin
-      admin_password: admin
+      admin_user: root
+      admin_password: secret
